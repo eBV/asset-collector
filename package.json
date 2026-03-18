@@ -1,0 +1,12 @@
+{
+  "name": "vid-downloader",
+  "version": "1.0.0",
+  "description": "MP3 ripper – yt-dlp + Express backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
