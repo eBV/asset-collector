@@ -493,9 +493,10 @@ body {
             <div>
                 <p class="form-label" style="margin-bottom:10px;">Supported sources</p>
                 <div class="source-chips">
-                    <span class="chip chip-yt">YouTube</span>
-                    <span class="chip chip-sc">SoundCloud</span>
-                    <span class="chip chip-tw">Twitch</span>
+                    <span class="chip chip-sc">jadynviolet</span>
+                    <span class="chip chip-sc chip-sc-ebv">_ebv</span>
+                    <span class="chip chip-yt">@ohnahji</span>
+                    <span class="chip chip-tw">twitch (all)</span>
                 </div>
             </div>
 
@@ -547,7 +548,7 @@ body {
     const btnLabel  = document.getElementById('btnLabel');
     const toggleMp3 = document.getElementById('toggleMp3');
     const toggleMp4 = document.getElementById('toggleMp4');
-    const chipSc    = document.querySelector('.chip-sc');
+    const chipSc    = document.querySelectorAll('.chip-sc');
 
     let format = 'mp3';
 
@@ -557,7 +558,7 @@ body {
         toggleMp3.classList.toggle('active', !isMp4);
         toggleMp4.classList.toggle('active',  isMp4);
         btnLabel.textContent = isMp4 ? 'COLLECT ASSET — MP4' : 'COLLECT ASSET — MP3';
-        chipSc.classList.toggle('hidden', isMp4);
+        chipSc.forEach(c => c.classList.toggle('hidden', isMp4));
         setStatus('');
     }
 
