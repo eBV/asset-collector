@@ -2,6 +2,8 @@
 
 A personal audio/video downloader with a Neo-Kawaii UI. Paste a link, pick MP3 or MP4, click collect. Built with vanilla HTML/CSS/JS on the frontend and Node.js + [yt-dlp](https://github.com/yt-dlp/yt-dlp) + ffmpeg on the backend.
 
+> **Disclaimer:** This tool is built for personal use with content the author owns or has rights to. It ships with source restrictions that enforce this. If you fork or modify this project to remove those restrictions and use it to download content you do not own or have rights to, you do so entirely at your own risk. The author accepts no liability for any copyright infringement, platform ToS violations, legal claims, or any other damages arising from such use. Downloading third-party content without permission may violate copyright law and platform terms of service.
+
 ![Neo-Kawaii dashboard with pink dotted background, split-panel layout — branding on the left, download form on the right](https://raw.githubusercontent.com/eBV/asset-collector/master/preview.png)
 
 ---
