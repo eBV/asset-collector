@@ -20,6 +20,12 @@
     --font-display: 'Epilogue', sans-serif;
     --font-mono: 'Space Mono', monospace;
     --pad: 32px;
+    /* ── Motion tokens ── */
+    --transition-fast: 200ms;
+    --transition-base: 300ms;
+    --transition-slow: 500ms;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 * {
     box-sizing: border-box;
@@ -40,6 +46,20 @@ body {
     overflow: hidden;
 }
 
+/* ── Entrance keyframes ── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes scaleInOnly {
+    from { transform: scale(0.6); }
+    to   { transform: scale(1); }
+}
+
 /* ── Frame ── */
 .app-frame {
     width: 100%;
@@ -53,6 +73,7 @@ body {
     gap: var(--border-w);
     overflow: hidden;
     position: relative;
+    animation: fadeUp var(--transition-slow) var(--ease) both;
 }
 
 /* ── Status bar ── */
@@ -79,6 +100,7 @@ body {
     background-color: var(--black);
     border-radius: 50%;
     animation: blink 1.5s infinite;
+    flex-shrink: 0;
 }
 @keyframes blink {
     0%, 100% { opacity: 1; }
@@ -126,6 +148,7 @@ body {
     right: -80px;
     box-shadow: 6px 6px 0 var(--black);
     opacity: 0.9;
+    animation: scaleInOnly var(--transition-slow) var(--ease-spring) 0.10s both;
 }
 .ring-2 {
     width: 140px;
@@ -135,6 +158,7 @@ body {
     right: 80px;
     box-shadow: 4px 4px 0 var(--black);
     opacity: 0.85;
+    animation: scaleInOnly var(--transition-slow) var(--ease-spring) 0.20s both;
 }
 .ring-3 {
     width: 60px;
@@ -143,6 +167,7 @@ body {
     top: 32px;
     right: 40px;
     box-shadow: 3px 3px 0 var(--black);
+    animation: scaleInOnly var(--transition-slow) var(--ease-spring) 0.05s both;
 }
 
 .hero-heading {
@@ -154,6 +179,7 @@ body {
     text-shadow: 4px 4px 0px var(--black);
     position: relative;
     z-index: 2;
+    animation: fadeUp var(--transition-base) var(--ease) 0.15s both;
 }
 
 .hero-sub {
@@ -172,6 +198,7 @@ body {
     position: relative;
     z-index: 2;
     width: fit-content;
+    animation: fadeUp var(--transition-base) var(--ease) 0.25s both;
 }
 
 .deco-waveform {
@@ -181,14 +208,18 @@ body {
     height: 48px;
     position: relative;
     z-index: 2;
+    animation: fadeIn var(--transition-base) var(--ease) 0.35s both;
 }
 .deco-waveform span {
     display: block;
     width: 5px;
     background: var(--white);
     border-radius: 2px;
-    animation: wave 1.2s ease-in-out infinite alternate;
     opacity: 0.5;
+    /* FIX: anchor scaleY from the bottom so bars grow upward, not from center */
+    transform-origin: bottom;
+    animation: wave 1.2s ease-in-out infinite alternate;
+    will-change: transform;
 }
 .deco-waveform span:nth-child(1)  { height: 14px; animation-delay: 0.0s; }
 .deco-waveform span:nth-child(2)  { height: 28px; animation-delay: 0.1s; }
@@ -221,6 +252,13 @@ body {
     overflow: hidden;
 }
 
+/* Staggered entrance for each form section */
+.form-panel > *:nth-child(1) { animation: fadeUp var(--transition-base) var(--ease) 0.15s both; }
+.form-panel > *:nth-child(2) { animation: fadeIn var(--transition-base) var(--ease) 0.22s both; }
+.form-panel > *:nth-child(3) { animation: fadeUp var(--transition-base) var(--ease) 0.28s both; }
+.form-panel > *:nth-child(4) { animation: fadeIn var(--transition-base) var(--ease) 0.34s both; }
+.form-panel > *:nth-child(5) { animation: fadeUp var(--transition-base) var(--ease) 0.40s both; }
+
 .form-label {
     font-family: var(--font-mono);
     font-size: 0.7rem;
@@ -249,7 +287,32 @@ body {
 }
 .chip:last-child { margin-right: 0; }
 .chip-yt { background: var(--yellow); }
-.chip-sc { background: var(--pink); color: var(--white); text-shadow: 1px 1px 0 var(--black); }
+.chip-sc {
+    background: var(--pink);
+    color: var(--white);
+    text-shadow: 1px 1px 0 var(--black);
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 120px;
+    transition:
+        max-width          var(--transition-base) var(--ease),
+        padding-left       var(--transition-base) var(--ease),
+        padding-right      var(--transition-base) var(--ease),
+        margin-right       var(--transition-base) var(--ease),
+        border-left-width  var(--transition-base) var(--ease),
+        border-right-width var(--transition-base) var(--ease),
+        opacity            var(--transition-fast) var(--ease);
+}
+.chip-sc.hidden {
+    max-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    opacity: 0;
+    pointer-events: none;
+}
 .chip-tw { background: #9146FF; color: var(--white); border-color: var(--black); }
 
 .ref-divider {
@@ -277,7 +340,10 @@ body {
     background: var(--white);
     box-shadow: 4px 4px 0px var(--black);
     outline: none;
-    transition: box-shadow 0.1s ease, transform 0.1s ease;
+    /* FIX: specific properties instead of 'all'; use motion tokens */
+    transition:
+        box-shadow var(--transition-fast) var(--ease),
+        transform  var(--transition-fast) var(--ease-spring);
 }
 .url-input::placeholder {
     color: #aaa;
@@ -317,9 +383,14 @@ body {
     align-items: center;
     justify-content: center;
     gap: 12px;
-    transition: all 0.1s ease;
+    /* FIX: specific GPU-friendly properties instead of 'all'; use motion tokens */
+    transition:
+        background-color var(--transition-fast) var(--ease),
+        transform        var(--transition-fast) var(--ease-spring),
+        box-shadow       var(--transition-fast) var(--ease);
     position: relative;
     overflow: hidden;
+    will-change: transform;
 }
 .download-btn::before {
     content: '';
@@ -334,12 +405,7 @@ body {
     );
     pointer-events: none;
 }
-.download-btn:hover {
-    background: var(--burgundy);
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0px var(--black);
-}
-.download-btn:active {
+.download-btn:active:not(:disabled) {
     transform: translate(6px, 6px);
     box-shadow: 0px 0px 0px var(--black);
 }
@@ -348,6 +414,7 @@ body {
     cursor: not-allowed;
     transform: none;
     box-shadow: 6px 6px 0px var(--black);
+    will-change: auto;
 }
 .download-btn svg {
     width: 22px;
@@ -378,7 +445,10 @@ body {
     background: var(--white);
     color: var(--black);
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    /* FIX: use motion tokens */
+    transition:
+        background-color var(--transition-fast) var(--ease),
+        color            var(--transition-fast) var(--ease);
     letter-spacing: 0.5px;
 }
 .toggle-opt:first-child {
@@ -387,33 +457,6 @@ body {
 .toggle-opt.active {
     background: var(--burgundy);
     color: var(--white);
-}
-.toggle-opt:not(.active):hover {
-    background: var(--yellow);
-}
-
-.chip-sc {
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 120px;
-    transition:
-        max-width      0.3s ease,
-        padding-left   0.3s ease,
-        padding-right  0.3s ease,
-        margin-right   0.3s ease,
-        border-left-width  0.3s ease,
-        border-right-width 0.3s ease,
-        opacity        0.2s ease;
-}
-.chip-sc.hidden {
-    max-width: 0;
-    padding-left: 0;
-    padding-right: 0;
-    margin-right: 0;
-    border-left-width: 0;
-    border-right-width: 0;
-    opacity: 0;
-    pointer-events: none;
 }
 
 .spinner {
@@ -427,6 +470,24 @@ body {
     flex-shrink: 0;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Hover states — touch-device safe ── */
+@media (hover: hover) {
+    .url-input:hover:not(:focus) {
+        box-shadow: 5px 5px 0px var(--black);
+        transform: translate(-1px, -1px);
+    }
+
+    .download-btn:hover:not(:disabled) {
+        background-color: var(--burgundy);
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0px var(--black);
+    }
+
+    .toggle-opt:not(.active):hover {
+        background-color: var(--yellow);
+    }
+}
 
 /* ── Mobile fallback ── */
 @media (max-width: 767px) {
@@ -447,6 +508,33 @@ body {
     .ring-3 { width: 40px; height: 40px; top: 20px; right: 20px; }
     .hero-heading { font-size: 3.2rem; letter-spacing: -2px; }
     .form-panel { padding: 28px 24px; gap: 18px; }
+}
+
+/* ── Reduced motion — disable non-essential animations ── */
+@media (prefers-reduced-motion: reduce) {
+    /* Stop decorative continuous animations */
+    .blink-dot { animation: none; opacity: 1; }
+    .deco-waveform span { animation: none; transform: scaleY(0.7); }
+    .spinner { animation: none; }
+
+    /* Cancel all entrance animations — elements appear immediately */
+    .app-frame,
+    .hero-heading,
+    .hero-sub,
+    .deco-waveform,
+    .ring-1, .ring-2, .ring-3,
+    .form-panel > * {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Make all transitions instant */
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+    }
 }
     </style>
 </head>
